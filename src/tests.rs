@@ -77,8 +77,8 @@ mod tests {
         graph.add_edge("B", "C", "edge").unwrap();
         let graph_string = graph.serialize();
         let result_string = "\"A\" \"node\"\n\"B\" \"node\"\n\"C\" \"node\"\n#\n\"A\" \"B\" \"edge\"\n\"B\" \"C\" \"edge\"\n";
-        let mut graph_vec = graph_string.split("\n").collect::<Vec<&str>>();
-        let mut result_vec = result_string.split("\n").collect::<Vec<&str>>();
+        let mut graph_vec = graph_string.split('\n').collect::<Vec<&str>>();
+        let mut result_vec = result_string.split('\n').collect::<Vec<&str>>();
         graph_vec.sort();
         result_vec.sort();
         assert_eq!(graph_vec, result_vec);
@@ -90,9 +90,9 @@ mod tests {
         graph.add_vertex(1, "ha ha".to_string());
         graph.add_vertex(2, "haha".to_string());
         graph.add_edge(1, 2, 2.2).unwrap();
-        let graph_from_str: Graph<i32, String, f64> = Graph::from("2 \"haha\"\n1 \"ha ha\"\n#\n1 2 2.2\n");
+        let graph_from_str: Graph<i32, String, f64> =
+            Graph::from("2 \"haha\"\n1 \"ha ha\"\n#\n1 2 2.2\n");
         assert_eq!(graph.vertices, graph_from_str.vertices);
         assert_eq!(graph.edges, graph_from_str.edges);
     }
-
 }

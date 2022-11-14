@@ -19,6 +19,8 @@ fn main() {
         }
     }
 
-    println!("\npath between A and C: {}", graph.bfs("A".to_string(), "C".to_string()));
-
+    println!(
+        "\npath between A and C: {}",
+        graph.bfs("A".to_string(), "C".to_string())
+    );
 }
