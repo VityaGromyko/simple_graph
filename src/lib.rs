@@ -9,6 +9,11 @@ use std::hash::Hash;
 use std::io::Read;
 use std::str::FromStr;
 
+ #[derive(Debug)]
+pub enum GraphError {
+    VertexNotFound
+}
+
 #[derive(Debug)]
 pub struct Graph<VId, V, E> {
     vertices: HashMap<VId, V>,
@@ -36,8 +41,8 @@ where
         &self.vertices
     }
     /// get value of vertice
-    pub fn get_vertex_value(self: &Self, vid: VId) -> &V {
-        &self.vertices.get(&vid).expect("Vertice not found")
+    pub fn get_vertex_value(self: &Self, vid: VId) -> Option<&V> {
+        self.vertices.get(&vid)
     }
     /// remove vertex by id (and all edges)
     pub fn remove_vertex(self: &mut Graph<VId, V, E>, vid: VId) {
@@ -56,9 +61,11 @@ where
         }
     }
     /// add edge (from id, to id, edge value)
-    pub fn add_edge(self: &mut Self, from: VId, to: VId, edge: E) {
+    pub fn add_edge(self: &mut Self, from: VId, to: VId, edge: E) -> Result<(), GraphError>{
         let adjacent_to_from = self.edges.entry(from).or_default();
+        if !self.vertices.contains_key(&to) {return Err(GraphError::VertexNotFound)};
         adjacent_to_from.push((to, edge));
+        Ok(())
     }
     /// get neighbors (vertixe id, edge value)
     pub fn get_neighbors(self: &Self, vid: VId) ->  Option<&Vec<(VId, E)>> {
@@ -188,7 +195,7 @@ where
                     let from = delete_quotes(&line_elements[0]).parse::<VId>().unwrap();
                     let to = delete_quotes(&line_elements[1]).parse::<VId>().unwrap();
                     let edge = delete_quotes(&line_elements[2]).parse::<E>().unwrap();
-                    output.add_edge(from, to, edge);
+                    output.add_edge(from, to, edge).expect("data corrupted");
                 },
                 _ => (),
             }
